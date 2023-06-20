@@ -50,8 +50,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: currentUser?.name as string,
-      image: currentUser?.image,
+      name: currentUser?.name || '',
+      image: currentUser?.image || '',
     },
   });
 
@@ -116,7 +116,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     className="rounded-full"
                     src={
                       image ||
-                      (currentUser?.image as string) ||
+                      currentUser?.image ||
                       '/assets/images/placeholder.jpg'
                     }
                     alt="Avatar"
