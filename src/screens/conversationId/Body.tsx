@@ -8,6 +8,7 @@ import { seenMessage } from '@/services/api/conversations';
 import { getMessagesByConversationId } from '@/services/api/messages';
 import type { FullMessageType } from '@/types';
 
+import { BeatLoading } from './Loading';
 import MessageBox from './MessageBox';
 
 const Body: React.FC = () => {
@@ -16,7 +17,7 @@ const Body: React.FC = () => {
 
   const { conversationId } = useConversation();
 
-  const { data: messagesFetched } = useQuery(
+  const { data: messagesFetched, isLoading } = useQuery(
     ['messagesByConversationId', conversationId],
     () => getMessagesByConversationId(conversationId),
     { enabled: !!conversationId }
@@ -35,6 +36,10 @@ const Body: React.FC = () => {
     bottomRef?.current?.scrollIntoView();
 
     const messageHandler = (message: FullMessageType) => {
+      // if (message.status === 'pending') {
+      //   console.log(message);
+      //   return;
+      // }
       seenMessage(conversationId);
       setMessages((current) => {
         if (find(current, { id: message.id })) {
@@ -71,6 +76,7 @@ const Body: React.FC = () => {
 
   return (
     <div className="flex-1 overflow-y-auto">
+      {isLoading && <BeatLoading />}
       {messages?.map((message, i) => (
         <MessageBox
           isLast={i === messages.length - 1}

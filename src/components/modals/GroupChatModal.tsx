@@ -1,11 +1,11 @@
+import type { User } from 'next-auth';
 import React from 'react';
 import type { FieldValues, SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 
 import { createNewConversation } from '@/services/api/conversations';
-import { getListUsers } from '@/services/api/users';
 
 import Button from '../Button';
 import Input from '../inputs/Input';
@@ -15,10 +15,14 @@ import Modal from './Modal';
 interface GroupChatModalProps {
   isOpen?: boolean;
   onClose: () => void;
+  users: User[];
 }
 
-const GroupChatModal: React.FC<GroupChatModalProps> = ({ isOpen, onClose }) => {
-  const { data: users } = useQuery('listUsers', getListUsers);
+const GroupChatModal: React.FC<GroupChatModalProps> = ({
+  isOpen,
+  onClose,
+  users = [],
+}) => {
   const mutation = useMutation({
     mutationFn: (data: any) => {
       return createNewConversation(data);

@@ -19,6 +19,13 @@ export default async function handler(
 
   try {
     const { message, image, conversationId } = req.body;
+    // const invalidMessage = {
+    //   body: message,
+    //   conversationId,
+    //   sender: session?.user,
+    //   status: 'pending',
+    // };
+    // await pusherServer.trigger(conversationId, 'messages:new', invalidMessage);
     const newMessage = await prisma.message.create({
       include: {
         seen: true,
@@ -61,7 +68,10 @@ export default async function handler(
         },
       },
     });
-    await pusherServer.trigger(conversationId, 'messages:new', newMessage);
+    await pusherServer.trigger(conversationId, 'messages:new', {
+      ...newMessage,
+      status: 'success',
+    });
 
     const lastMessage =
       updatedConversation.messages[updatedConversation.messages.length - 1];

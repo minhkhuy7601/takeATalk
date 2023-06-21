@@ -7,6 +7,7 @@ import { Meta } from '@/layouts/Meta';
 import Body from '@/screens/conversationId/Body';
 import Form from '@/screens/conversationId/Form';
 import Header from '@/screens/conversationId/Header';
+import { ClipLoading } from '@/screens/conversationId/Loading';
 import ConversationList from '@/screens/conversations/ConversationList';
 import { getConversationById } from '@/services/api/conversations';
 import { Main } from '@/templates/Main';
@@ -26,7 +27,7 @@ const ConversationIdPage = () => {
           <ConversationList title="Messages" />
           <div className="h-full lg:pl-80">
             <div className="flex h-screen flex-col">
-              {isLoading && <>Loading...</>}
+              {isLoading && <ClipLoading />}
               {!isLoading && !conversation && <EmptyState />}
               {!isLoading && conversation && (
                 <>

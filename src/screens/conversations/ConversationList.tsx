@@ -12,6 +12,7 @@ import GroupChatModal from '@/components/modals/GroupChatModal';
 import useConversation from '@/hooks/useConversation';
 import { pusherClient } from '@/libs/pusher';
 import { getListConversations } from '@/services/api/conversations';
+import { getListUsers } from '@/services/api/users';
 import type { FullConversationType } from '@/types';
 
 import ConversationBox from './ConversationBox';
@@ -30,6 +31,10 @@ const ConversationList: React.FC<ConversationListProps> = () => {
   const { isLoading, data: conversations } = useQuery(
     'listConversations',
     getListConversations
+  );
+  const { data: users, isLoading: isLoadingUser } = useQuery(
+    'listUsers',
+    getListUsers
   );
 
   const { conversationId } = useConversation();
@@ -90,6 +95,7 @@ const ConversationList: React.FC<ConversationListProps> = () => {
       <GroupChatModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        users={users}
       />
       <aside
         className={clsx(
@@ -112,10 +118,22 @@ const ConversationList: React.FC<ConversationListProps> = () => {
         <div className="px-5">
           <div className="mb-4 flex justify-between pt-4">
             <div className="text-2xl font-bold text-neutral-800">Messages</div>
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(true)}
-              className="
+            {isLoadingUser ? (
+              <div
+                className="
+                h-9
+                w-9
+                animate-pulse 
+                rounded-full 
+                bg-gray-100 
+                p-2 
+              "
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+                className="
                 cursor-pointer 
                 rounded-full 
                 bg-gray-100 
@@ -124,9 +142,10 @@ const ConversationList: React.FC<ConversationListProps> = () => {
                 transition 
                 hover:opacity-75
               "
-            >
-              <MdOutlineGroupAdd size={20} />
-            </button>
+              >
+                <MdOutlineGroupAdd size={20} />
+              </button>
+            )}
           </div>
           {isLoading &&
             Array.from(Array(5).keys()).map((item) => (
