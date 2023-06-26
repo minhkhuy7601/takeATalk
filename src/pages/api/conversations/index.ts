@@ -13,6 +13,7 @@ export default async function handler(
   const session = await getServerSession(req, res, authOptions);
   if (!session?.user?.email) {
     res.status(200).json([]);
+    return;
   }
 
   try {

@@ -12,15 +12,20 @@ export default async function handler(
   const session = await getServerSession(request, response, authOptions);
 
   if (!session?.user?.email) {
-    return response.status(401);
+    response.status(401);
+    return;
   }
 
-  const socketId = request.body.socket_id;
-  const channel = request.body.channel_name;
-  const data = {
-    user_id: session.user.email,
-  };
+  try {
+    const socketId = request.body.socket_id;
+    const channel = request.body.channel_name;
+    const data = {
+      user_id: session.user.email,
+    };
 
-  const authResponse = pusherServer.authorizeChannel(socketId, channel, data);
-  return response.send(authResponse);
+    const authResponse = pusherServer.authorizeChannel(socketId, channel, data);
+    response.status(200).json(authResponse);
+  } catch (error) {
+    response.status(500).send(error);
+  }
 }
